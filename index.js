@@ -2,7 +2,7 @@ const spawn = require('child_process').spawn;
 
 const callRegexps = {
     callEstablished: /Call established: (.+)/,
-    callReceived: /Incoming call from: (\d+ )*(\S+) -/,
+    callReceived: /Incoming call from: (\d+ )?(\S+) -/,
     hangUp: /(.+): session closed/,
 };
 
