@@ -1,0 +1,22 @@
+{
+  "name": "baresip-wrapper",
+  "version": "1.0.0",
+  "description": "A NodeJS wrapper for BareSIP utility",
+  "keywords": [
+    "baresip"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexander-elgin/baresip-wrapper.git"
+  },
+  "engines": {
+    "npm": ">=3",
+    "node": ">=5"
+  },
+  "author": "Alexander Elgin",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "child_process": "^1.0.2"
+  }
+}
