@@ -1,18 +1,31 @@
+require('whatwg-fetch');
 const spawn = require('child_process').spawn;
 
 const callRegexps = {
     callEstablished: /Call established: (.+)/,
-    callReceived: /Incoming call from: (\d+ )?(\S+) -/,
+    callReceived: /Incoming call from: (\w+ )?(\S+) -/,
     hangUp: /(.+): session closed/,
 };
 
-const keyErrorLogs = {
-    callMuted: 'call muted',
-    callUnmuted: 'call un-muted',
-    serverConnected: 'registered successfully',
-};
+const executeCommand = command => fetch(`http://127.0.0.1:8000/?${command}`);
 
 class Baresip {
+    static accept() {
+        executeCommand('a');
+    }
+
+    static dial(phoneNumber) {
+        executeCommand(`d${phoneNumber}`);
+    }
+
+    static hangUp() {
+        executeCommand('b');
+    }
+
+    static toggleCallMuted() {
+        executeCommand('m');
+    }
+
     constructor(processPath, callbacks = {}) {
         this.callbacks = {};
 
@@ -22,8 +35,6 @@ class Baresip {
             'hangUp',
             'callReceived',
             'callEstablished',
-            'callMuted',
-            'callUnmuted',
         ].forEach((event) => {
             this.on(event, callbacks[event] === undefined ? () => {} : callbacks[event]);
         });
@@ -33,12 +44,8 @@ class Baresip {
         [
             'on',
             'connect',
-            'hangUp',
             'kill',
             'reload',
-            'accept',
-            'dial',
-            'toggleCallMuted',
         ].forEach((method) => {
             this[method] = this[method].bind(this);
         });
@@ -63,7 +70,7 @@ class Baresip {
                 const matches = parsedData.match(callRegexps[event]);
 
                 if ((matches !== null) && (matches.length > 0)) {
-                    this.callbacks[event](matches[matches.length - 1].replace('SIP ', ''));
+                    this.callbacks[event](matches[matches.length - 1]);
                 }
             });
 
@@ -73,11 +80,9 @@ class Baresip {
         this.baresip.stderr.on('data', (data) => {
             const parsedData = `${data}`;
 
-            Object.keys(keyErrorLogs).forEach((event) => {
-                if (parsedData.includes(keyErrorLogs[event])) {
-                    this.callbacks[event]();
-                }
-            });
+            if (parsedData.includes('registered successfully')) {
+                this.callbacks.serverConnected();
+            }
 
             console.error(parsedData);
         });
@@ -90,26 +95,6 @@ class Baresip {
     reload() {
         this.kill();
         this.connect(this.processPath);
-    }
-
-    executeCommand(command) {
-        this.baresip.stdin.write(`/${command}\n`);
-    }
-
-    accept() {
-        this.executeCommand('accept');
-    }
-
-    dial(phoneNumber) {
-        this.executeCommand(`dial ${phoneNumber}`);
-    }
-
-    hangUp() {
-        this.executeCommand('hangup');
-    }
-
-    toggleCallMuted() {
-        this.executeCommand('mute');
     }
 }
 

@@ -26,11 +26,9 @@ const baresip = new Baresip('command to start baresip');
 
 * **ready** *BareSIP has been initialized*
 * **serverConnected** *BareSIP has been connected to the SIP server provider*
-* **hangUp** *the phone has been hanged up on the other side*
 * **callEstablished** *your outgoing call has been accepted by the other side*
 * **callReceived** *an incoming call has been received*
-* **callMuted** *your microphone has been muted for the current call*
-* **callUnmuted** *your microphone has been un-muted for the current call*
+* **hangUp** *the phone has been hanged up on the other side*
 
 phone number is provided as an argument for the following event handlers
 
