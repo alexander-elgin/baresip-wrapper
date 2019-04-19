@@ -1,5 +1,9 @@
 # BareSIP NodeJS Wrapper
 
+## Requirements
+
+httpd module has to be uncommented in the BareSIP config
+
 ## Install
 ```sh
 $ npm install baresip-wrapper
