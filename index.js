@@ -38,7 +38,7 @@ class Baresip {
             'reload',
             'accept',
             'dial',
-            'toggleCallMuted'
+            'toggleCallMuted',
         ].forEach((method) => {
             this[method] = this[method].bind(this);
         });
@@ -51,7 +51,6 @@ class Baresip {
     connect(processPath) {
         this.processPath = processPath;
         this.baresip = spawn(this.processPath);
-        this.baresip.stdin.setEncoding('utf-8');
 
         this.baresip.stdout.on('data', (data) => {
             const parsedData = `${data}`;
@@ -93,22 +92,25 @@ class Baresip {
         this.connect(this.processPath);
     }
 
+    executeCommand(command) {
+        this.baresip.stdin.write(`/${command}\n`);
+    }
+
     accept() {
-        this.baresip.stdin.write('/accept\n');
+        this.executeCommand('accept');
     }
 
     dial(phoneNumber) {
-        this.baresip.stdin.write(`/dial ${phoneNumber}\n`);
+        this.executeCommand(`dial ${phoneNumber}`);
     }
 
     hangUp() {
-        this.baresip.stdin.write('/hangup\n');
+        this.executeCommand('hangup');
     }
 
     toggleCallMuted() {
-        this.baresip.stdin.write('/mute\n');
+        this.executeCommand('mute');
     }
 }
 
 module.exports = Baresip;
-
