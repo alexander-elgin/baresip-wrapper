@@ -1,4 +1,4 @@
-require('whatwg-fetch');
+const { get } = require('http');
 const spawn = require('child_process').spawn;
 
 const callRegexps = {
@@ -7,7 +7,13 @@ const callRegexps = {
     hangUp: /(.+): session closed/,
 };
 
-const executeCommand = command => fetch(`http://127.0.0.1:8000/?${command}`);
+const options = { host: '127.0.0.1', port: '8000', agent: false };
+const nop = () => {};
+
+const executeCommand = (command) => {
+    options.path = `/?${command}`;
+    get(options, nop);
+};
 
 class Baresip {
     static accept() {
