@@ -1,6 +1,6 @@
 {
   "name": "baresip-wrapper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A NodeJS wrapper for BareSIP utility",
   "keywords": [
     "baresip"
@@ -17,7 +17,6 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "child_process": "^1.0.2",
-    "whatwg-fetch": "^3.0.0"
+    "child_process": "^1.0.2"
   }
 }
