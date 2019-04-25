@@ -1,5 +1,6 @@
 const { get } = require('http');
-const spawn = require('child_process').spawn;
+const { spawn } = require('child_process');
+const { fixPath } = require('os-dependent-path-delimiter');
 
 const callRegexps = {
     callEstablished: /Call established: (.+)/,
@@ -62,7 +63,7 @@ class Baresip {
     }
 
     connect(processPath) {
-        this.processPath = processPath;
+        this.processPath = fixPath(processPath);
         this.baresip = spawn(this.processPath);
 
         this.baresip.stdout.on('data', (data) => {
