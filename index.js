@@ -1,11 +1,13 @@
-const { get } = require('http');
 const { spawn } = require('child_process');
+const { get } = require('http');
 const { fixPath } = require('os-dependent-path-delimiter');
 
-const callRegexps = {
+const eventRegexps = {
     callEstablished: /Call established: (.+)/,
     callReceived: /Incoming call from: (\w+ )?(\S+) -/,
     hangUp: /(.+): session closed/,
+    ready: /baresip is ready/,
+    serverConnected: /\[1 binding\]/,
 };
 
 const options = { host: '127.0.0.1', port: '8000', agent: false };
@@ -36,13 +38,7 @@ class Baresip {
     constructor(processPath, callbacks = {}) {
         this.callbacks = {};
 
-        [
-            'serverConnected',
-            'ready',
-            'hangUp',
-            'callReceived',
-            'callEstablished',
-        ].forEach((event) => {
+        Object.keys(eventRegexps).forEach((event) => {
             this.on(event, callbacks[event] === undefined ? () => {} : callbacks[event]);
         });
 
@@ -64,17 +60,13 @@ class Baresip {
 
     connect(processPath) {
         this.processPath = fixPath(processPath);
-        this.baresip = spawn(this.processPath);
+        this.process = spawn(this.processPath);
 
-        this.baresip.stdout.on('data', (data) => {
+        this.process.stdout.on('data', (data) => {
             const parsedData = `${data}`;
 
-            if (parsedData.includes('baresip is ready')) {
-                this.callbacks.ready();
-            }
-
-            Object.keys(callRegexps).forEach((event) => {
-                const matches = parsedData.match(callRegexps[event]);
+            Object.keys(eventRegexps).forEach((event) => {
+                const matches = parsedData.match(eventRegexps[event]);
 
                 if ((matches !== null) && (matches.length > 0)) {
                     this.callbacks[event](matches[matches.length - 1]);
@@ -84,19 +76,11 @@ class Baresip {
             console.log(parsedData);
         });
 
-        this.baresip.stderr.on('data', (data) => {
-            const parsedData = `${data}`;
-
-            if (parsedData.includes('registered successfully')) {
-                this.callbacks.serverConnected();
-            }
-
-            console.error(parsedData);
-        });
+        this.process.stderr.on('data', (data) => console.error(`${data}`));
     }
 
     kill() {
-        this.baresip.kill();
+        this.process.kill();
     }
 
     reload() {
