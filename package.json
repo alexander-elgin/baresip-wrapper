@@ -15,6 +15,9 @@
   },
   "author": "Alexander Elgin",
   "license": "MIT",
+  "scripts": {
+    "demo": "node ./scripts/demo.js"
+  },
   "main": "index.js",
   "dependencies": {
     "child_process": "^1.0.2",
