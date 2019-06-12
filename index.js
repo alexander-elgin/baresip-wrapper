@@ -19,22 +19,6 @@ const executeCommand = (command) => {
 };
 
 class Baresip {
-    static accept() {
-        executeCommand('a');
-    }
-
-    static dial(phoneNumber) {
-        executeCommand(`d${phoneNumber}`);
-    }
-
-    static hangUp() {
-        executeCommand('b');
-    }
-
-    static toggleCallMuted() {
-        executeCommand('m');
-    }
-
     constructor(processPath, callbacks = {}) {
         this.callbacks = {};
 
@@ -54,8 +38,33 @@ class Baresip {
         });
     }
 
+    accept() {
+        executeCommand('a');
+    }
+
+    dial(phoneNumber) {
+        executeCommand(`d${phoneNumber}`);
+    }
+
+    hangUp() {
+        executeCommand('b');
+    }
+
+    toggleCallMuted() {
+        executeCommand('m');
+    }
+
     on(event, callback) {
         this.callbacks[event] = callback;
+    }
+
+    kill() {
+        this.process.kill();
+    }
+
+    reload() {
+        this.kill();
+        this.connect(this.processPath);
     }
 
     connect(processPath) {
@@ -77,15 +86,6 @@ class Baresip {
         });
 
         this.process.stderr.on('data', (data) => console.error(`${data}`));
-    }
-
-    kill() {
-        this.process.kill();
-    }
-
-    reload() {
-        this.kill();
-        this.connect(this.processPath);
     }
 }
 

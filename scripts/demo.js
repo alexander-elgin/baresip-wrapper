@@ -6,7 +6,7 @@ void async function () {
             callEstablished: number => console.log(`!!!!!!!!!!a call with ${number} has been established!!!!!!!!!!`),
             hangUp: number => console.log(`********the call with ${number} has been terminated********`),
             serverConnected: () => {
-                SipPhone.dial('1111');
+                sipPhone.dial('1111');
                 setTimeout(() => sipPhone.process.stdin.write('/quit\n'), 9600);
             }
         });
