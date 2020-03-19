@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const { get } = require('http');
 const { fixPath } = require('os-dependent-path-delimiter');
+const kill = require('tree-kill');
 
 const eventRegexps = {
     callEstablished: /Call established: (.+)/,
@@ -20,13 +21,13 @@ const executeCommand = (command) => {
 
 class Baresip {
     constructor(processPath, callbacks = {}) {
+        this.connected = false;
+        this.processPath = fixPath(processPath);
         this.callbacks = {};
 
         Object.keys(eventRegexps).forEach((event) => {
             this.on(event, callbacks[event] === undefined ? () => {} : callbacks[event]);
         });
-
-        this.connect(processPath);
 
         [
             'on',
@@ -58,17 +59,24 @@ class Baresip {
         this.callbacks[event] = callback;
     }
 
-    kill() {
-        this.process.kill();
+    kill(callback) {
+        kill(this.process.pid, 'SIGKILL', (err) => {
+            if (!err) {
+                this.connected = false;
+
+                if (callback !== undefined) {
+                    callback();
+                }
+            }
+        });
     }
 
     reload() {
-        this.kill();
-        this.connect(this.processPath);
+        this.kill(() => this.connect());
     }
 
-    connect(processPath) {
-        this.processPath = fixPath(processPath);
+    connect() {
+        this.connected = true;
         this.process = spawn(this.processPath);
 
         this.process.stdout.on('data', (data) => {

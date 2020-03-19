@@ -10,6 +10,7 @@ void async function () {
                 setTimeout(() => sipPhone.process.stdin.write('/quit\n'), 9600);
             }
         });
+        sipPhone.connect();
     } catch (error) {
         console.error(error);
     }

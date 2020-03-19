@@ -14,6 +14,7 @@ $ npm install baresip-wrapper
 import Baresip from 'baresip-wrapper';
 
 const baresip = new Baresip('command to start baresip');
+baresip.connect();
 ```
 
 ## Methods

@@ -1,6 +1,6 @@
 {
   "name": "baresip-wrapper",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A NodeJS wrapper for BareSIP utility",
   "keywords": [
     "baresip"
@@ -21,6 +21,7 @@
   "main": "index.js",
   "dependencies": {
     "child_process": "^1.0.2",
-    "os-dependent-path-delimiter": "^1.0.1"
+    "os-dependent-path-delimiter": "^1.0.1",
+    "tree-kill": "^1.2.2"
   }
 }
