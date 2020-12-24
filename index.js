@@ -5,7 +5,7 @@ const kill = require('tree-kill');
 
 const eventRegexps = {
     callEstablished: /Call established: (.+)/,
-    callReceived: /Incoming call from: (\w+ )?(\S+) -/,
+    callReceived: /Incoming call from: ([\+\w]+ )?(\S+) -/,
     hangUp: /(.+): session closed/,
     ready: /baresip is ready/,
     serverConnected: /\[1 binding\]/,
