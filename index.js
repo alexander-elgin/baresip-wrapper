@@ -8,7 +8,7 @@ const eventRegexps = {
     callReceived: /Incoming call from: ([\+\w]+ )?(\S+) -/,
     hangUp: /(.+): session closed/,
     ready: /baresip is ready/,
-    serverConnected: /\[1 binding\]/,
+    serverConnected: /\[\d+ bindings?\]/,
 };
 
 const options = { host: '127.0.0.1', port: '8000', agent: false };

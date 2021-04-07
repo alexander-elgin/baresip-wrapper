@@ -1,6 +1,6 @@
 {
   "name": "baresip-wrapper",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A NodeJS wrapper for BareSIP utility",
   "keywords": [
     "baresip"
